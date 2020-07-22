@@ -1,13 +1,14 @@
-$pdflatex = 'lualatex --shell-escape';
+$pdf_mode = 1;
+$pdflatex = 'lualatex --shell-escape --output-dir="build"';
+
+$wdir = '.';
 if (-d "/compile/tex") {  # Overleaf
-    ensure_path('TEXINPUTS', '/compile/tex//');
-    ensure_path('TEXINPUTS', '/compile/graphics//');
-    ensure_path('OPENTYPEFONTS', '/compile/tex//');
-    ensure_path('TTFONTS', '/compile/tex//');
+    $wdir = '/compile';
+    $pdflatex = 'lualatex --shell-escape';
+} else {
+    $out_dir = 'build';
 }
-else {  # other
-    ensure_path('TEXINPUTS', './tex//');
-    ensure_path('TEXINPUTS', './graphics//');
-    ensure_path('OPENTYPEFONTS', './tex//');
-    ensure_path('TTFONTS', './tex//');
-}
+ensure_path('TEXINPUTS', $wdir . '/tex//');
+ensure_path('TEXINPUTS', $wdir . '/graphics//');
+ensure_path('OPENTYPEFONTS', $wdir . '/tex//');
+ensure_path('TTFONTS', $wdir . '/tex//');
