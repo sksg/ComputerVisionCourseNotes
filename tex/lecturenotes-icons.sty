@@ -1,0 +1,62 @@
+\RequirePackage{tikz}
+
+\DeclareDocumentCommand{\exampleicon}{}{%
+\begin{tikzpicture}[baseline=+0.5mm]
+\def\width{4mm}
+\def\height{4mm}
+\def\margin{0.8mm}
+\def\spacing{0.8mm}
+% \draw[thick, rounded corners=0.5mm]
+%  (0,0) rectangle ++ (\width,\height);
+\begin{scope}[shift={(0.5*\width,0.5*\height-\margin)}]
+\draw[thick, rounded corners=0.1mm]
+ (0.5*\spacing, 0) -- ++ (0, 0.25*\spacing)
+  to[out=90,in=-90] ++ (0.5*\spacing, 1.5*\spacing)
+  to[out=90,in=0] ++ (-\spacing, \spacing)
+  to[out=180,in=90] ++ (-\spacing, -\spacing)
+  to[out=-90,in=90] ++ (0.5*\spacing, -1.5*\spacing)
+  -- ++ (0, -0.25*\spacing) -- cycle;
+\draw[thick, line cap=round] (-0.45*\spacing, -0.35*\spacing) -- ++ (0.9*\spacing, 0);
+%\draw[thick, line cap=round] (-0.45*\spacing, -0.5*\spacing) -- ++ (0.9*\spacing, 0);
+\draw[thick, line cap=round] (-0.4*\spacing, -0.75*\spacing) -- ++ (0.8*\spacing, 0);
+\end{scope}
+\end{tikzpicture}%
+}
+
+\DeclareDocumentCommand{\exerciseicon}{}{%
+\begin{tikzpicture}[baseline=+0.5mm]
+\def\width{4mm}
+\def\height{4mm}
+\def\margin{0.3mm}
+\def\spacing{0.8mm}
+% \draw[thick, rounded corners=0.5mm]
+%  (0,0) rectangle ++ (\width,\height);
+\begin{scope}[shift={(0.5*\width+3*\margin,0.5*\height+4*\margin)},rotate=225]
+    \fill[rounded corners=0.1mm, draw=none]
+     (0,0) -- ++({\width-2*\margin-1.25*\spacing}, 0)
+     to[in=-40,out=40] ++ (0, \spacing)
+      -- ++({-\width+2*\margin+1.25*\spacing}, 0) -- cycle;
+    \fill[rounded corners=0.1mm, draw=none]
+     (\width-2*\margin-\spacing, 0)
+      to[in=-40,out=40] ++(0, \spacing)
+      -- ++(\spacing, -0.5*\spacing) -- cycle;
+\end{scope}
+\end{tikzpicture}%
+}
+
+\def\checkmark{\tikz\fill[scale=0.4](0,.35) -- (.25,0) -- (1,.7) -- (.25,.15) -- cycle;}
+
+\DeclareDocumentCommand{\solutionicon}{}{%
+\begin{tikzpicture}[baseline=+0.5mm]
+\def\width{4mm}
+\def\height{4mm}
+\def\margin{0.3mm}
+% \draw[thick, rounded corners=0.5mm]
+%  (0,0) rectangle ++ (\width,\height);
+\begin{scope}[shift={(0.5*\width,0.5*\height)}]
+\begin{scope}[shift={({-0.45*(\width - 2*\margin)},{-0.3*(\height - 2*\margin)})}]
+\fill(0,{.35*(\height - 2*\margin)}) -- ({.25*(\width - 2*\margin)},0) -- ({(\width - 2*\margin)},{.7*(\height - 2*\margin)}) -- ({.25*(\width - 2*\margin)},{.15*(\height - 2*\margin)}) -- cycle;
+\end{scope}
+\end{scope}
+\end{tikzpicture}%
+}

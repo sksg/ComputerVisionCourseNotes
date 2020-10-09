@@ -1,4 +1,4 @@
-\documentclass{CVCN-sta}
+\documentclass{lecturenotes-sta}
 
 \begin{document}
   \def\dw{0.25}\def\dh{0.5}
@@ -11,7 +11,7 @@
     \draw[gray,rounded corners=8pt] (-\dw,-\dh)-- (-\dw, 0) --
         (0,\dh)--(\dw,0)--(\dw,-\dh);
     \draw[gray, thick] (-0.5,-\dh) -- (0.5,-\dh);
-    \draw[->,thick,green, shift={(-3mm,0)}] 
+    \draw[->,thick,green, shift={(-3mm,0)}]
         (0,-\dh) -- (0,0) node[pos=0.5, left, black] {\(\vect{t}_1\)};
     \link (60:3cm);
     \joint
@@ -22,7 +22,7 @@
     \draw[->,thick,green]
         (0, -0.4) arc[radius=.4, start angle=-90, end angle={60}]
         node[pos=0.5, right, black] {\(\matr{R}_1\)};
-    \draw[->,thick,green, shift={(150:3mm)}] 
+    \draw[->,thick,green, shift={(150:3mm)}]
         (0,0) -- (60:3cm) node[pos=0.55, left, black] {\(\vect{t}_2\)};
     \tikzset{shift={(60:3cm)}}
     \link (-30:2cm);
@@ -31,7 +31,7 @@
     \draw[->,thick,green]
         (-120:0.4) arc[radius=.4, start angle=-120, end angle={-30}]
         node[pos=0.5, below, black] {\(\matr{R}_2\)};
-    \draw[->,thick,green, shift={(60:3mm)}] 
+    \draw[->,thick,green, shift={(60:3mm)}]
         (0,0) -- (-30:2cm) node[pos=0.55, above, black] {\(\vect{t}_3\)};
     \tikzset{shift={(-30:2cm)}}
     \link (20:2cm);
@@ -40,14 +40,14 @@
     \draw[->,thick,green]
         (150:0.4) arc[radius=.4, start angle=-210, end angle={20}]
         node[pos=0.5, below, black] {\(\matr{R}_3\)};
-    \draw[->,thick,green, shift={(110:2mm)}] 
+    \draw[->,thick,green, shift={(110:2mm)}]
         (0,0) -- (20:2cm) node[pos=0.55, above, black] {\(\vect{t}_4\)};
     \tikzset{shift={(20:2cm)}}
     \begin{scope}[rotate=20]
     \draw[gray, ultra thick](0cm,0.3cm)--(0cm,-0.3cm);
     \fill[gray] (0cm, 0.15cm)+(0cm,1.5pt) -- +(0.16cm,0cm) -- +(0pt,-1.5pt);
     \fill[gray] (0cm, -0.15cm)+(0cm,1.5pt) -- +(0.16cm,0cm) -- +(0pt,-1.5pt);
-    
+
     \begin{scope}[shift={(0.3,0)},rotate=-90]
     \fill[lightgray]
         (-.3, .2 ) -- (.3, .2) -- (.3, .1) -- ( .6, .18) --
@@ -57,7 +57,7 @@
         node[pos=0, below right, xshift=5pt] {\(\symcal{C}\)};
     \end{scope}
     \end{scope}
-    
+
     \tikzset{shift={(20:3mm)}}
     \draw[dashed] (-160:{2*\dh}) -- (0,0) (-70:{2*\dh}) -- (0,0);
     \draw[->,thick,green]

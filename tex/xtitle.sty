@@ -1,0 +1,72 @@
+%%
+% Modified \title, \author, and \date commands.  These store the
+% (footnote-less) values in \plaintitle, \plainauthor, and \thedate, respectively.
+
+\gdef\plaintitle{}%     plain-text-only title
+\gdef\plainauthor{}%    plain-text-only author
+\gdef\plainpublisher{}% plain-text-only publisher
+
+\gdef\thanklesstitle{}%     full title text minus \thanks{}
+\gdef\thanklessauthor{}%    full author text minus \thanks{}
+\gdef\thanklesspublisher{}% full publisher minus \thanks{}
+
+\gdef\@publisher{}% full publisher with \thanks{}
+\gdef\thedate{\today}
+
+% TODO Fix it so that \thanks is not spaced out (with `soul') and can be
+% used in \maketitle when the `sfsidenotes' option is provided.
+\RenewDocumentCommand{\thanks}{m}{\NoCaseChange{\footnote{#1}}}
+
+\RenewDocumentCommand{\title}{om}{%
+  \gdef\@title{#2}%
+  \begingroup%
+    % TODO store contents of \thanks command
+    \RenewDocumentCommand{\thanks}{m}{}% swallow \thanks contents
+    \protected@xdef\thanklesstitle{#2}%
+  \endgroup%
+  \IfNoValueOrEmptyTF{#1}%
+    {\gdef\plaintitle{\thanklesstitle}}% use thankless title
+    {\gdef\plaintitle{#1}}% use provided plain-text title
+  \@ifpackageloaded{hyperref}%
+    {\hypersetup{pdftitle={\plaintitle}}}% set the PDF metadata title
+    {}% hyperref is not loaded; do nothing
+}
+
+\let\@author\@empty% suppress default latex.ltx ``no author'' warning
+\RenewDocumentCommand{\author}{om}{%
+  \IfEmptyTF{#2}{}{\gdef\@author{#2}}%
+  \begingroup%
+    % TODO store contents of \thanks command
+    \RenewDocumentCommand{\thanks}{m}{}% swallow \thanks contents
+    \protected@xdef\thanklessauthor{#2}%
+  \endgroup%
+  \IfNoValueOrEmptyTF{#1}%
+    {\gdef\plainauthor{\thanklessauthor}}% use thankless author
+    {\gdef\plainauthor{#1}}% use provided plain-text author
+  \@ifpackageloaded{hyperref}
+    {\hypersetup{pdfauthor={\plainauthor}}}% set the PDF metadata title
+    {}% hyperref is not loaded; do nothing
+}
+
+\RenewDocumentCommand{\date}{m}{%
+  \gdef\@date{#1}%
+  \begingroup%
+    % TODO store contents of \thanks command
+    \RenewDocumentCommand{\thanks}{m}{}% swallow \thanks contents
+    \protected@xdef\thedate{#1}%
+  \endgroup%
+}
+
+%%
+% Provides a \publisher command to set the publisher
+
+\NewDocumentCommand{\publisher}{om}{%
+  \gdef\@publisher{#2}%
+  \begingroup%
+    \RenewDocumentCommand{\thanks}{m}{}% swallow \thanks contents
+    \protected@xdef\thanklesspublisher{#2}%
+  \endgroup%
+  \IfNoValueOrEmptyTF{#1}%
+    {\gdef\plainpublisher{\thanklesspublisher}}% use thankless publisher
+    {\gdef\plainpublisher{#1}}% use provided plain-text publisher
+}

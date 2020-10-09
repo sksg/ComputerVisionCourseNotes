@@ -1,0 +1,191 @@
+\RequirePackage{tikz}
+\RequirePackage{lecturenotes-icons}
+\RequirePackage{mdframed}
+\RequirePackage{collect}
+
+\def\thereomfont{\normalfont\large\itshape}
+
+\newmdenv[
+  topline=false,
+  bottomline=false,
+  % rightline=false,
+  skipabove=\topsep,
+  skipbelow=\topsep,
+  leftmargin=-10pt,
+  rightmargin=-10pt,
+  innertopmargin=0pt,
+  innerbottommargin=0pt,
+  linewidth=2pt
+]{siderulersimpl}
+
+\NewDocumentEnvironment{siderulers}{O{linecolor=black}}{%
+    \ifusesiderulers%
+      \begin{siderulersimpl}[#1]%
+    \fi%
+  }{%
+    \ifusesiderulers%
+      \end{siderulersimpl}%
+    \fi%
+  }
+
+\newif\ifusesiderulers
+\usesiderulerstrue
+
+\NewDocumentEnvironment{exercises}{}%
+  {\usesiderulersfalse}%
+  {\usesiderulerstrue}
+
+\definecolor{examplecolor}{RGB}{5,112,176}
+\definecolor{exercisecolor}{RGB}{35,132,67}
+\definecolor{solutioncolor}{RGB}{255,160,0}
+
+\newcounter{ln@example@cnt}[section]
+\newcounter{ln@exercise@cnt}[section]
+\newcounter{ln@solution@cnt}[section]
+
+% These commands must be expandable, or else the label commands are saved "unexpanded".
+\RenewExpandableDocumentCommand\theln@example@cnt{}{\thesection.\arabic{ln@example@cnt}}
+\RenewExpandableDocumentCommand\theln@exercise@cnt{}{\thesection.\arabic{ln@exercise@cnt}}
+\RenewExpandableDocumentCommand\theln@solution@cnt{}{\thesection.\arabic{ln@solution@cnt}}
+
+\NewDocumentEnvironment{example}{o +b}{
+    \par%
+    \begin{siderulers}[linecolor=examplecolor]%
+      \refstepcounter{ln@example@cnt}%
+      \noindent%
+      {\thereomfont%
+      \color{examplecolor}%
+      \exampleicon~~Example~\theln@example@cnt%
+      \IfValueTF{#1}%
+        {:~#1\vspace{0.5\baselineskip}\par\noindent}%
+        {.~~}
+      \ignorespaces}%
+      #2%
+  }{%
+      \ifhmode\unskip\fi%
+    \end{siderulers}%
+  }
+
+\NewDocumentEnvironment{exerciseimpl}{o}{
+    \par%
+    \begin{siderulers}[linecolor=exercisecolor]%
+      \setcounter{ln@solution@cnt}%
+        {\value{ln@exercise@cnt}}%
+      \refstepcounter{ln@exercise@cnt}%
+      \edef\ln@exclabel@key{ln:exercise:\theln@exercise@cnt}%
+      \edef\ln@sollabel@key{ln:solution:\theln@exercise@cnt}%
+      \label{\ln@exclabel@key}%
+      \noindent%
+      {\thereomfont%
+      \color{exercisecolor}%
+      \exerciseicon~~Exercise~\theln@exercise@cnt%
+      \IfValueTF{#1}%
+        {:~#1\vspace{0.5\baselineskip}\par\noindent}%
+        {.~~}%
+      \ignorespaces}%
+  }{%
+      \ifhmode\unskip\fi%
+      \@ifundefined{r@\ln@sollabel@key}{%
+        \marginnote{\itshape No solution to exercise~\theln@exercise@cnt.}
+      }{%
+        \marginnote{\itshape{\color{solutioncolor}\Cref{\ln@sollabel@key}} on page \pageref{\ln@sollabel@key}.}%
+      }%
+    \end{siderulers}%
+  }
+
+\NewDocumentEnvironment{exercise}{o}{
+    \begin{exerciseimpl}[#1]%
+  }{%
+    \ifopensolutionenv%
+      \end{solutionimpl}%
+    \else%
+      \end{exerciseimpl}%
+    \fi%
+    \opensolutionenvfalse%
+  }
+
+\NewDocumentCommand\solution{o}{%
+    \end{exerciseimpl}%
+    \opensolutionenvtrue%
+    \begin{solutionimpl}[#1]%
+  }
+
+\newif\ifopensolutionenv
+\opensolutionenvfalse
+
+\NewDocumentEnvironment{solutionimpl}{o+b}{%
+    \refstepcounter{ln@solution@cnt}%
+    \edef\ln@exclabel@key{ln:exercise:\theln@solution@cnt}%
+    \edef\ln@sollabel@key{ln:solution:\theln@solution@cnt}%
+    \def\CE@file{solutions}%
+    \edef\CE@prefileenv{\unexpanded{%
+      \par%
+      \begin{siderulers}[linecolor=solutioncolor]}%
+        \noexpand\setcounter{ln@solution@cnt}%
+          {\arabic{ln@solution@cnt}}%
+        \noexpand\addtocounter{ln@solution@cnt}%
+            {-1}%
+        \noexpand\refstepcounter{ln@solution@cnt}%
+        \noexpand\label\expandafter{\ln@sollabel@key}%
+        \unexpanded{%
+        \noindent%
+        \begingroup
+        \thereomfont%
+        \color{solutioncolor}%
+        \solutionicon~~Solution~}\theln@solution@cnt%
+        \IfValueTF{#1}%
+          {:\noexpand~#1\unexpanded{\vspace{0.5\baselineskip}\par\noindent}}%
+          \unexpanded{.~~}%
+        \unexpanded{%
+        \ignorespaces
+        \endgroup}%
+    }%
+    \edef\CE@postfileenv{%
+        \unexpanded{\ifhmode\unskip\fi}%
+        \@ifundefined{r@\ln@exclabel@key}{%
+          \noexpand\marginnote{\noexpand\color{red}\noexpand\itshape Error: No exercise to solution\noexpand~\theln@solution@cnt found.}
+        }{%
+        \noexpand\marginnote{\noexpand\itshape{\noexpand\color{exercisecolor}\noexpand\Cref\expandafter{\ln@exclabel@key}} on page \noexpand\pageref\expandafter{\ln@exclabel@key}.}%
+        }%
+        \unexpanded{\end{siderulers}}%
+    }%
+    \CE@ensure@opened{\CE@file}%
+    \edef\@tempa{\csname CE@@\CE@file @out\endcsname}%
+    \immediate\write\@tempa{\unexpanded\expandafter{\CE@prefileenv}}%
+    \immediate\write\@tempa{\unexpanded{#2}}%
+    \immediate\write\@tempa{\unexpanded\expandafter{\CE@postfileenv}}%
+  }{}
+
+\definecollection{solutions}
+\NewDocumentCommand\printallsolutions{}{%
+  \includecollection{solutions}
+}
+
+\NewDocumentEnvironment{scorecard}{oo}{
+  \vspace{0.5\baselineskip}%
+  \par\noindent%
+  {\thereomfont\color{exercisecolor}\IfValueTF{#1}{#1}{Score card:}}\IfValueT{#2}{~#2}%
+   \begin{itemize}\renewcommand{\labelitemi}{}\itemsep0em\itshape
+}{%
+  \end{itemize}%
+  \vspace\baselineskip\par%
+  \@ifnextchar\par\@gobble\relax%
+}
+
+\let\oldtableofcontents\tableofcontents
+\renewcommand\tableofcontents{{\hypersetup{hidelinks}\oldtableofcontents}}
+
+\crefname{ln@example@cnt}{example}{examples}
+\Crefname{ln@example@cnt}{Examples}{Examples}
+\crefname{ln@exercise@cnt}{exercise}{exercises}
+\Crefname{ln@exercise@cnt}{Exercise}{Exercises}
+\crefname{ln@solution@cnt}{solution}{solutions}
+\Crefname{ln@solution@cnt}{Solution}{Solutions}
+
+\NewDocumentCommand\remark{om}{%
+  \IfNoValueOrEmptyTF{#1}{%
+    \sidenote{#2}%
+  }{%
+    \sidenote[][#1]{#2}%
+  }%
+}

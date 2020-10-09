@@ -1,0 +1,27 @@
+\newcommand{\harp}[1]{\mathpalette\harpoonvec{#1}\mkern-1mu}
+\newcommand{\harpvecsign}{\scriptscriptstyle\rightharpoonup}
+\newcommand{\harpoonvec}[2]{%
+  \ifx\displaystyle#1\doalign{$\harpvecsign$}{#1#2}\fi
+  \ifx\textstyle#1\doalign{$\harpvecsign$}{#1#2}\fi
+  \ifx\scriptstyle#1\doalign{\scalebox{.6}[.9]{$\harpvecsign$}}{#1#2}\fi
+  \ifx\scriptscriptstyle#1\doalign{\scalebox{.5}[.8]{$\harpvecsign$}}{#1#2}\fi
+}
+\newcommand{\doalign}[2]{%
+ {\vbox{\offinterlineskip\ialign{\hfil##\hfil\cr#1\cr$#2$\cr}}}%
+}
+
+\DeclareDocumentCommand{\vect}{m}{\harp{\symbf{#1}}}
+\DeclareDocumentCommand{\matr}{m}{\symbf{#1}}
+\DeclareMathOperator{\TR}{{^{\mkern-3mu\mathsf{T}}}\!\mkern-2mu}
+
+\mathcode`\*="8000
+{\catcode`\*\active\gdef*{\cdot}}
+
+\AtBeginDocument{%
+  \let\oldforall\forall%
+  \renewcommand{\forall}{\mkern2mu\oldforall\mkern3mu}%
+}
+
+\DeclareMathOperator{\AND}{\;\text{and}\;}
+\DeclareMathOperator{\OR}{\;\text{or}\;}
+\DeclareMathOperator{\WHERE}{\;\text{where}\;}

@@ -1,11 +1,16 @@
 \PassOptionsToPackage{math-style=ISO,bold-style=ISO}{unicode-math}
 \RequirePackage{amsmath,amssymb,fontspec,unicode-math,xparse,graphicx,xcolor,tikz}
-\usetikzlibrary{arrows,arrows.meta,bending,3d}
+\usetikzlibrary{arrows,arrows.meta,bending,3d,calc,positioning,decorations.pathmorphing}
 \tikzset{>={Latex},
          invclip/.style={clip,insert path={{%
             (current page.south east) rectangle (current page.north west)}}},
          point/.style={insert path={ node[scale=#1]{.} }},
-         point/.default=3}
+         point/.default=3,
+         pencildraw/.style={
+           decorate,
+           decoration={random steps,segment length=1.2pt,amplitude=0.2pt}
+         }
+      }
 
 \setmathfont{STIX2Math}[
     Extension={.otf},
@@ -61,10 +66,15 @@
 \newcommand{\doalign}[2]{%
  {\vbox{\offinterlineskip\ialign{\hfil##\hfil\cr#1\cr$#2$\cr}}}%
 }
-    
+
 \DeclareDocumentCommand{\vect}{m}{\harp{\symbf{#1}}}
 \DeclareDocumentCommand{\matr}{m}{\symbf{#1}}
 \DeclareMathOperator{\TR}{{^{\mkern-3mu\mathsf{T}}}\!\mkern-2mu}
 
 \mathcode`\*="8000
 {\catcode`\*\active\gdef*{\cdot}}
+
+\AtBeginDocument{%
+  \let\oldforall\forall%
+  \renewcommand{\forall}{\mkern2mu\oldforall\mkern3mu}%
+}
