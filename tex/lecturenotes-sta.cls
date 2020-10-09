@@ -1,6 +1,6 @@
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{CVCN-sta}[2020/06/01 Computer Vision Course Notes LaTeX standalone class]
+\ProvidesClass{lecturenotes-sta}[2020/06/01 Computer Vision Course Notes LaTeX standalone class]
 
 \LoadClass[10pt,oneside,tikz]{standalone}
 
-\RequirePackage{CVCN-common}
+\RequirePackage{lecturenotes-common}

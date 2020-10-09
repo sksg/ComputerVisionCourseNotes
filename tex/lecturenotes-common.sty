@@ -44,17 +44,14 @@
 
 \RequirePackage{xparse}
 \ExplSyntaxOn
-\DeclareExpandableDocumentCommand{\IfEmptyTF}{mmm}{%
+\DeclareExpandableDocumentCommand{\IfEmptyTF}{m +m +m}{%
   \tl_if_empty:nTF {#1} {#2} {#3}%
  }
 \ExplSyntaxOff
-\DeclareExpandableDocumentCommand{\IfNoValueOrEmptyTF}{mmm}{%
+\DeclareExpandableDocumentCommand{\IfNoValueOrEmptyTF}{m +m +m}{%
   \IfNoValueTF{#1}%
     {#2}%
     {\IfEmptyTF{#1}{#2}{#3}}%
-}
-\RenewExpandableDocumentCommand{\IfValueTF}{mmm}{%
-  \IfNoValueOrEmptyTF{#1}{#3}{#2}%
 }
 
 \colorlet{oldred}{red}
