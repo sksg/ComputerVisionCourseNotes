@@ -4,13 +4,10 @@
 
 \gdef\plaintitle{}%     plain-text-only title
 \gdef\plainauthor{}%    plain-text-only author
-\gdef\plainpublisher{}% plain-text-only publisher
 
 \gdef\thanklesstitle{}%     full title text minus \thanks{}
 \gdef\thanklessauthor{}%    full author text minus \thanks{}
-\gdef\thanklesspublisher{}% full publisher minus \thanks{}
 
-\gdef\@publisher{}% full publisher with \thanks{}
 \gdef\thedate{\today}
 
 % TODO Fix it so that \thanks is not spaced out (with `soul') and can be
@@ -55,18 +52,4 @@
     \RenewDocumentCommand{\thanks}{m}{}% swallow \thanks contents
     \protected@xdef\thedate{#1}%
   \endgroup%
-}
-
-%%
-% Provides a \publisher command to set the publisher
-
-\NewDocumentCommand{\publisher}{om}{%
-  \gdef\@publisher{#2}%
-  \begingroup%
-    \RenewDocumentCommand{\thanks}{m}{}% swallow \thanks contents
-    \protected@xdef\thanklesspublisher{#2}%
-  \endgroup%
-  \IfNoValueOrEmptyTF{#1}%
-    {\gdef\plainpublisher{\thanklesspublisher}}% use thankless publisher
-    {\gdef\plainpublisher{#1}}% use provided plain-text publisher
 }

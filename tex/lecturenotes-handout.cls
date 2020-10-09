@@ -40,8 +40,6 @@
 
 \newenvironment{fullwidth}{\begin{adjustwidth}{}{-\@ln@overhang}}{\end{adjustwidth}}
 
-\RequirePackage{xtitle}
-
 \RenewDocumentCommand{\maketitle}{}{%
   \newpage\
   \global\@topnum\z@% prevent floats from being placed at the top of the page
@@ -171,5 +169,3 @@
   {\hspace*{6em}} % before w/o label
   {\normalfont\qquad\thecontentspage} % filler + page (leaders and page num)
   [] % after
-
-\RequirePackage{lecturenotes-boxes}

@@ -1,39 +1,41 @@
-\RequirePackage{tikz}
 \RequirePackage{lecturenotes-icons}
+
 \RequirePackage{mdframed}
+\newmdenv[
+  topline=false,      bottomline=false,
+  skipabove=\topsep,  skipbelow=\topsep,
+  leftmargin=-10pt,   rightmargin=-10pt,
+  innertopmargin=0pt, innerbottommargin=0pt,
+  linewidth=2pt
+]{ruledbox}
+
+\def\thereomtitlefont{\normalfont\large\itshape}
+\NewDocumentCommand\NewRuledBoxTheorem{mo}{
+    \newcounter{ln@#1@cnt}[section]
+    \RenewExpandableDocumentCommand\theln@#1@cnt{}{\thesection.\arabic{ln@#1@cnt}}
+    \NewExpandableDocumentCommand\the#1{}{\theln@#1@cnt}
+    \letcolor{#1color}{black}
+    \NewDocumentEnvironment{#1}{o}{
+        \begin{ruledbox}[linecolor=#1color]%
+            \refstepcounter{ln@#1@cnt}%
+            \noindent{\thereomtitlefont\color{#1color}%
+            \IfValueTF{#2}%
+              {#2}%
+              {\MakeUppercase #1}
+            \IfValueTF{##1}%
+              {:~##1\medskip\par\noindent}%
+              {.~~}
+        \ignorespaces}%
+    }{%
+        \ifhmode\unskip\fi%
+        \end{ruledbox}%
+    }
+}
+
 \RequirePackage{collect}
 
-\def\thereomfont{\normalfont\large\itshape}
+\NewDocumentEnvironment{exercises}{}{\def\ruledbox{}\def\endruledbox{}}{}
 
-\newmdenv[
-  topline=false,
-  bottomline=false,
-  % rightline=false,
-  skipabove=\topsep,
-  skipbelow=\topsep,
-  leftmargin=-10pt,
-  rightmargin=-10pt,
-  innertopmargin=0pt,
-  innerbottommargin=0pt,
-  linewidth=2pt
-]{siderulersimpl}
-
-\NewDocumentEnvironment{siderulers}{O{linecolor=black}}{%
-    \ifusesiderulers%
-      \begin{siderulersimpl}[#1]%
-    \fi%
-  }{%
-    \ifusesiderulers%
-      \end{siderulersimpl}%
-    \fi%
-  }
-
-\newif\ifusesiderulers
-\usesiderulerstrue
-
-\NewDocumentEnvironment{exercises}{}%
-  {\usesiderulersfalse}%
-  {\usesiderulerstrue}
 
 \definecolor{examplecolor}{RGB}{5,112,176}
 \definecolor{exercisecolor}{RGB}{35,132,67}
@@ -50,10 +52,10 @@
 
 \NewDocumentEnvironment{example}{o +b}{
     \par%
-    \begin{siderulers}[linecolor=examplecolor]%
+    \begin{ruledbox}[linecolor=examplecolor]%
       \refstepcounter{ln@example@cnt}%
       \noindent%
-      {\thereomfont%
+      {\thereomtitlefont%
       \color{examplecolor}%
       \exampleicon~~Example~\theln@example@cnt%
       \IfValueTF{#1}%
@@ -63,12 +65,12 @@
       #2%
   }{%
       \ifhmode\unskip\fi%
-    \end{siderulers}%
+    \end{ruledbox}%
   }
 
 \NewDocumentEnvironment{exerciseimpl}{o}{
     \par%
-    \begin{siderulers}[linecolor=exercisecolor]%
+    \begin{ruledbox}[linecolor=exercisecolor]%
       \setcounter{ln@solution@cnt}%
         {\value{ln@exercise@cnt}}%
       \refstepcounter{ln@exercise@cnt}%
@@ -76,7 +78,7 @@
       \edef\ln@sollabel@key{ln:solution:\theln@exercise@cnt}%
       \label{\ln@exclabel@key}%
       \noindent%
-      {\thereomfont%
+      {\thereomtitlefont%
       \color{exercisecolor}%
       \exerciseicon~~Exercise~\theln@exercise@cnt%
       \IfValueTF{#1}%
@@ -90,7 +92,7 @@
       }{%
         \marginnote{\itshape{\color{solutioncolor}\Cref{\ln@sollabel@key}} on page \pageref{\ln@sollabel@key}.}%
       }%
-    \end{siderulers}%
+    \end{ruledbox}%
   }
 
 \NewDocumentEnvironment{exercise}{o}{
@@ -120,7 +122,7 @@
     \def\CE@file{solutions}%
     \edef\CE@prefileenv{\unexpanded{%
       \par%
-      \begin{siderulers}[linecolor=solutioncolor]}%
+      \begin{ruledbox}[linecolor=solutioncolor]}%
         \noexpand\setcounter{ln@solution@cnt}%
           {\arabic{ln@solution@cnt}}%
         \noexpand\addtocounter{ln@solution@cnt}%
@@ -130,7 +132,7 @@
         \unexpanded{%
         \noindent%
         \begingroup
-        \thereomfont%
+        \thereomtitlefont%
         \color{solutioncolor}%
         \solutionicon~~Solution~}\theln@solution@cnt%
         \IfValueTF{#1}%
@@ -147,7 +149,7 @@
         }{%
         \noexpand\marginnote{\noexpand\itshape{\noexpand\color{exercisecolor}\noexpand\Cref\expandafter{\ln@exclabel@key}} on page \noexpand\pageref\expandafter{\ln@exclabel@key}.}%
         }%
-        \unexpanded{\end{siderulers}}%
+        \unexpanded{\end{ruledbox}}%
     }%
     \CE@ensure@opened{\CE@file}%
     \edef\@tempa{\csname CE@@\CE@file @out\endcsname}%
@@ -164,7 +166,7 @@
 \NewDocumentEnvironment{scorecard}{oo}{
   \vspace{0.5\baselineskip}%
   \par\noindent%
-  {\thereomfont\color{exercisecolor}\IfValueTF{#1}{#1}{Score card:}}\IfValueT{#2}{~#2}%
+  {\thereomtitlefont\color{exercisecolor}\IfValueTF{#1}{#1}{Score card:}}\IfValueT{#2}{~#2}%
    \begin{itemize}\renewcommand{\labelitemi}{}\itemsep0em\itshape
 }{%
   \end{itemize}%
