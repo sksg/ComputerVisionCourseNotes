@@ -51,20 +51,33 @@
             }%
     }{\end{#1impl}}
 }
-\NewDocumentCommand\OpenCollection{m}{%
-    \expandafter\newwrite\csname @ln@collection@#1\endcsname%
-    \expandafter\immediate\expandafter\openout\csname @ln@collection@#1\endcsname=\jobname-#1.tex%
+\NewDocumentCommand\EnsureOpenCollection{m}{%
+    \@ifundefined{if@ln@collection@#1@open}{%
+        \expandafter\newif\csname if@ln@collection@#1@open\endcsname%
+        \expandafter\global\csname @ln@collection@#1@openfalse\endcsname%
+        \expandafter\newwrite\csname @ln@collection@#1\endcsname%
+	  }{}%
+    \csname if@ln@collection@#1@open\endcsname\else%
+        \expandafter\immediate\expandafter\openout%
+        \csname @ln@collection@#1\endcsname=\jobname.#1%
+        \expandafter\global\csname @ln@collection@#1@opentrue\endcsname%
+    \fi%
 }
 \NewDocumentCommand\WriteToCollection{m+m}{%
     \expandafter\immediate\expandafter\write\csname @ln@collection@#1\endcsname{#2}%
 }
 \NewDocumentCommand\PrintCollection{m}{%
+    \@ifundefined{if@ln@collection@#1@open}{%
+		    \PackageError{lecturenotes-boxes}{Collection `#1' has not been defined}{\@ehc}%
+    }{}%
     \expandafter\immediate\expandafter\closeout\csname @ln@collection@#1\endcsname%
-    \input{\jobname-#1.tex}%
+    \expandafter\global\csname @ln@collection@#1@openfalse\endcsname%
+    \input{\jobname.#1}%
 }
 \NewDocumentCommand\CollectRuledBoxTheorem{m}{
-    \OpenCollection{#1}
+    \EnsureOpenCollection{#1}%
     \RenewDocumentEnvironment{#1}{so+b}{%
+        \EnsureOpenCollection{#1}%
         \IfBooleanTF{##1}%
             {\IfValueTF{##2}%
                 {\WriteToCollection{#1}{\string\begin{#1impl*}[##2]}}%
