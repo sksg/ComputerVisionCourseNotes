@@ -12,61 +12,97 @@
 \def\thereomtitlefont{\normalfont\large\itshape}
 \NewDocumentCommand\NewRuledBoxTheorem{mo}{
     \newcounter{ln@#1@cnt}[section]
-    \RenewExpandableDocumentCommand\theln@#1@cnt{}{\thesection.\arabic{ln@#1@cnt}}
-    \NewExpandableDocumentCommand\the#1{}{\theln@#1@cnt}
-    \letcolor{#1color}{black}
-    \NewDocumentEnvironment{#1}{o}{
-        \begin{ruledbox}[linecolor=#1color]%
-            \refstepcounter{ln@#1@cnt}%
-            \noindent{\thereomtitlefont\color{#1color}%
-            \IfValueTF{#2}%
-              {#2}%
-              {\MakeUppercase #1}
-            \IfValueTF{##1}%
-              {:~##1\medskip\par\noindent}%
-              {.~~}
-        \ignorespaces}%
+    \expandafter\RenewExpandableDocumentCommand\csname theln@#1@cnt\endcsname{}{\thesection.\arabic{ln@#1@cnt}}
+    \expandafter\NewExpandableDocumentCommand\csname the#1\endcsname{}{\csname theln@#1@cnt\endcsname}
+    \colorlet{#1color}{black}
+    \NewDocumentEnvironment{#1impl}{so}{
+        \ruledbox[linecolor=#1color]%
+            \noindent\refstepcounter{ln@#1@cnt}%
+            {%
+                \thereomtitlefont\color{#1color}%
+                \IfBooleanTF{##1}%
+                  {\IfValueTF{##2}%
+                    {##2}%
+                    {\IfValueTF{#2}%
+                      {#2.~~}%
+                      {\MakeUppercase #1.~~}}%
+                  }%
+                  {\IfValueTF{#2}%
+                    {#2}%
+                    {\MakeUppercase #1~\csname the#1\endcsname}%
+                  \IfValueTF{##2}%
+                    {:~##2\medskip\par\noindent}%
+                    {.~~}
+                  }%
+            }\ignorespaces%
     }{%
         \ifhmode\unskip\fi%
-        \end{ruledbox}%
+        \endruledbox%
     }
+    \NewDocumentEnvironment{#1}{so}{%
+        \IfBooleanTF{##1}%
+            {\IfValueTF{##2}%
+                {\begin{#1impl*}[##2]}%
+                {\begin{#1impl*}}%
+            }%
+            {\IfValueTF{##2}%
+                {\begin{#1impl}[##2]}%
+                {\begin{#1impl}}%
+            }%
+    }{\end{#1impl}}
 }
+\NewDocumentCommand\OpenCollection{m}{%
+    \expandafter\newwrite\csname @ln@collection@#1\endcsname%
+    \expandafter\immediate\expandafter\openout\csname @ln@collection@#1\endcsname=\jobname-#1.tex%
+}
+\NewDocumentCommand\WriteToCollection{m+m}{%
+    \expandafter\immediate\expandafter\write\csname @ln@collection@#1\endcsname{#2}%
+}
+\NewDocumentCommand\PrintCollection{m}{%
+    \expandafter\immediate\expandafter\closeout\csname @ln@collection@#1\endcsname%
+    \input{\jobname-#1.tex}%
+}
+\NewDocumentCommand\CollectRuledBoxTheorem{m}{
+    \OpenCollection{#1}
+    \RenewDocumentEnvironment{#1}{so+b}{%
+        \IfBooleanTF{##1}%
+            {\IfValueTF{##2}%
+                {\WriteToCollection{#1}{\string\begin{#1impl*}[##2]}}%
+                {\WriteToCollection{#1}{\string\begin{#1impl*}}}%
+            }%
+            {\IfValueTF{##2}%
+                {\WriteToCollection{#1}{\string\begin{#1impl}[##2]}}%
+                {\WriteToCollection{#1}{\string\begin{#1impl}}}%
+            }%
+        \WriteToCollection{#1}{\unexpanded{##3}}%
+        \WriteToCollection{#1}{\string\end{#1impl}}
+    }{\PrintCollection{#1}}
+}
+
+\NewRuledBoxTheorem{example}[\exampleicon~~Example~\theexample]
+\definecolor{examplecolor}{RGB}{5,112,176}
+
+\CollectRuledBoxTheorem{example}
 
 \RequirePackage{collect}
 
-\NewDocumentEnvironment{exercises}{}{\def\ruledbox{}\def\endruledbox{}}{}
+\NewDocumentEnvironment{exercises}{}{%
+    \RenewDocumentEnvironment{ruledbox}{o}{}{}%
+}{}
 
 
-\definecolor{examplecolor}{RGB}{5,112,176}
 \definecolor{exercisecolor}{RGB}{35,132,67}
 \definecolor{solutioncolor}{RGB}{255,160,0}
 
-\newcounter{ln@example@cnt}[section]
+%\newcounter{ln@example@cnt}[section]
 \newcounter{ln@exercise@cnt}[section]
 \newcounter{ln@solution@cnt}[section]
 
 % These commands must be expandable, or else the label commands are saved "unexpanded".
-\RenewExpandableDocumentCommand\theln@example@cnt{}{\thesection.\arabic{ln@example@cnt}}
+%\RenewExpandableDocumentCommand\theln@example@cnt{}{\thesection.\arabic{ln@example@cnt}}
 \RenewExpandableDocumentCommand\theln@exercise@cnt{}{\thesection.\arabic{ln@exercise@cnt}}
 \RenewExpandableDocumentCommand\theln@solution@cnt{}{\thesection.\arabic{ln@solution@cnt}}
 
-\NewDocumentEnvironment{example}{o +b}{
-    \par%
-    \begin{ruledbox}[linecolor=examplecolor]%
-      \refstepcounter{ln@example@cnt}%
-      \noindent%
-      {\thereomtitlefont%
-      \color{examplecolor}%
-      \exampleicon~~Example~\theln@example@cnt%
-      \IfValueTF{#1}%
-        {:~#1\vspace{0.5\baselineskip}\par\noindent}%
-        {.~~}
-      \ignorespaces}%
-      #2%
-  }{%
-      \ifhmode\unskip\fi%
-    \end{ruledbox}%
-  }
 
 \NewDocumentEnvironment{exerciseimpl}{o}{
     \par%
