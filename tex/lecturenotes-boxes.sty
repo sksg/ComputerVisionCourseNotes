@@ -52,7 +52,6 @@
     }{\end{#1impl}}
 }
 \NewDocumentCommand\EnsureOpenCollection{m}{%
-<<<<<<< HEAD
     \@ifundefined{if@ln@collection@#1@open}{%
         \expandafter\newif\csname if@ln@collection@#1@open\endcsname%
         \expandafter\global\csname @ln@collection@#1@openfalse\endcsname%
@@ -63,10 +62,6 @@
         \csname @ln@collection@#1\endcsname=\jobname.#1%
         \expandafter\global\csname @ln@collection@#1@opentrue\endcsname%
     \fi%
-=======
-    \expandafter\newwrite\csname @ln@collection@#1\endcsname%
-    \expandafter\immediate\expandafter\openout\csname @ln@collection@#1\endcsname=\jobname-#1.tex%
->>>>>>> refs/remotes/overleaf/master
 }
 \NewDocumentCommand\WriteToCollection{m+m}{%
     \expandafter\immediate\expandafter\write\csname @ln@collection@#1\endcsname{#2}%
