@@ -51,7 +51,7 @@
             }%
     }{\end{#1impl}}
 }
-\NewDocumentCommand\OpenCollection{m}{%
+\NewDocumentCommand\EnsureOpenCollection{m}{%
     \expandafter\newwrite\csname @ln@collection@#1\endcsname%
     \expandafter\immediate\expandafter\openout\csname @ln@collection@#1\endcsname=\jobname-#1.tex%
 }
